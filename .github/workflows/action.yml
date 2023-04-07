@@ -38,6 +38,6 @@ jobs:
           echo test, and deploy your project.
           echo ${{ github.repository }}
           ls -al
-          python try.py ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
+          python try.py ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }} ${{ github.ref_name }}
         shell: sh
 
