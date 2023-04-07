@@ -13,7 +13,7 @@ token = args.token
 repo_name = args.repo_name
 branch_name = args.branch_name
 
-url = f'https://api.github.com/repos/{repo_name}/dependabot/alerts'
+url = 'https://api.github.com/repos/'+repo_name+'/dependabot/alerts'
 
 payload={}
 headers = {
@@ -36,7 +36,7 @@ for records in response:
         summary = records['security_advisory']['summary']
         advisory = records['security_advisory']['ghsa_id']
         blank = ""
-        dependabotIssues.append([package, severity, cvss, summary, f'https://github.com/{repo_name}/tree/{branch_name}/'+path, 'https://github.com/advisories/'+advisory, blank, blank])
+        dependabotIssues.append([package, severity, cvss, summary, 'https://github.com/'+repo_name+'/tree/{branch_name}/'+path, 'https://github.com/advisories/'+advisory, blank, blank])
         count += 1
 print(count)
 print(dependabotIssues)
