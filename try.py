@@ -4,6 +4,7 @@ import argparse
 
 parser = argparse.ArgumentParser("Argument Parser")
 parser.add_argument("token", metavar="token", type=str, help="auth_token")
+parser.add_argument("repo_name", metavar="repo_name", type=str, help="repo_name")
 parser.add_argument("branch_name", metavar="branch_name", type=str, help="branch_name")
 
 args = parser.parse_args()
