@@ -37,6 +37,7 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
           echo ${{ github.repository }}
+          python --version
           ls -al
           python try.py ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }} ${{ github.ref_name }}
         shell: sh
