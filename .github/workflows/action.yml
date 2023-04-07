@@ -39,4 +39,5 @@ jobs:
           echo ${{ github.repository }}
           ls -al
           python try.py ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
+        shell: sh
 
