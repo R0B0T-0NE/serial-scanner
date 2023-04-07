@@ -37,5 +37,6 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
           echo ${{ github.repository }}
-          python ${{ github.repository }}/try.py ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
+          ls -al
+          python try.py ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }}
 
