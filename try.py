@@ -4,12 +4,13 @@ import argparse
 
 parser = argparse.ArgumentParser("Argument Parser")
 parser.add_argument("token", metavar="token", type=str, help="auth_token")
-parser.add_argument("repo_name", metavar="repo_name", type=str, help="repo_name")
+parser.add_argument("branch_name", metavar="branch_name", type=str, help="branch_name")
 
-args = parser.parse_args
+args = parser.parse_args()
 
+token = args.token
 repo_name = args.repo_name
-token =args.token
+branch_name = args.branch_name
 
 url = f'https://api.github.com/repos/{repo_name}/dependabot/alerts'
 
@@ -34,7 +35,7 @@ for records in response:
         summary = records['security_advisory']['summary']
         advisory = records['security_advisory']['ghsa_id']
         blank = ""
-        dependabotIssues.append([package, severity, cvss, summary, description, f'https://github.com/{repo_name}/tree/{branch_name}/'+path, 'https://github.com/advisories/'+advisory], blank, blank)
+        dependabotIssues.append([package, severity, cvss, summary, description, f'https://github.com/{repo_name}/tree/{branch_name}/'+path, 'https://github.com/advisories/'+advisory, blank, blank])
         count += 1
 print(count)
 print(dependabotIssues)
