@@ -27,7 +27,7 @@ response = requests.request("GET", url, headers=headers, data=payload).json()
 count = 0 
 dependabotIssues = []
 for records in response:
-        description = (records['security_advisory']['description']).replace('\n','',1).replace('`','').replace('_','')
+        #description = (records['security_advisory']['description']).replace('\n','',1).replace('`','').replace('_','')
         path = records['dependency']['manifest_path']
         package = records['dependency']['package']['name']
         severity = records['security_advisory']['severity']
@@ -36,7 +36,7 @@ for records in response:
         summary = records['security_advisory']['summary']
         advisory = records['security_advisory']['ghsa_id']
         blank = ""
-        dependabotIssues.append([package, severity, cvss, summary, description, f'https://github.com/{repo_name}/tree/{branch_name}/'+path, 'https://github.com/advisories/'+advisory, blank, blank])
+        dependabotIssues.append([package, severity, cvss, summary, f'https://github.com/{repo_name}/tree/{branch_name}/'+path, 'https://github.com/advisories/'+advisory, blank, blank])
         count += 1
 print(count)
 print(dependabotIssues)
