@@ -25,6 +25,7 @@ headers = {
 
 response = requests.request("GET", url, headers=headers, data=payload).json()
 
+print(response)
 count = 0 
 dependabotIssues = []
 for records in response:
