@@ -35,6 +35,6 @@ jobs:
           echo ${{ github.repository }}
           python --version
           ls -al
-          python try.py ${{ github.repository }} ${{ secrets.GITHUB_TOKEN }} ${{ github.ref_name }}
+          python try.py ${{ secrets.GITHUB_TOKEN }} ${{ github.repository }} ${{ github.ref_name }}
         shell: sh
 
