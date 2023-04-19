@@ -4,14 +4,11 @@ name: first_flow
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      repo:
+        required: true
+        description: 'owner/repo format for example NARKOZ/hacker-scripts for https://github.com/NARKOZ/hacker-scripts'
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -29,14 +26,13 @@ jobs:
       - name: Run a multi-line script
         run: |
           python3 -m pip install semgrep
-          echo ${{ github.repository }}
           pip install -r requirements.txt
           pip install "tablib[xlsx]"
-          python try.py ${{ secrets.GH_TOKEN }} ${{ github.repository }}
+          python try.py ${{ secrets.GH_TOKEN }} ${{ github.events.input.repo }}
         shell: sh
         
       - name: artifact step 2
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: output-download
           path: output.xlsx
