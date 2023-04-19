@@ -8,6 +8,8 @@ on:
     inputs:
       repo:
         required: true
+        type: string
+        default: Suraj-Freshworks/action-playground
         description: 'owner/repo format for example NARKOZ/hacker-scripts for https://github.com/NARKOZ/hacker-scripts'
 
 
@@ -28,7 +30,7 @@ jobs:
           python3 -m pip install semgrep
           pip install -r requirements.txt
           pip install "tablib[xlsx]"
-          python try.py ${{ secrets.GH_TOKEN }} ${{ github.events.input.repo }}
+          python try.py ${{ secrets.GH_TOKEN }} ${{ inputs.repo }}
         shell: sh
         
       - name: artifact step 2
