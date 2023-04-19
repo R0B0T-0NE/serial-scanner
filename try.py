@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+#!/usr/bin/env python3
+
 import json
 import os
 import tablib
@@ -43,7 +45,7 @@ token_response = requests.request("GET", url, headers=headers, data=payload)
 if token_response.status_code == 200:
     print("Token is valid. Running script...")
 
-    #fork repo in your own account
+    #fork repo in own account
     fork_response = requests.request("POST", fork_url, headers=headers, data=payload)
     #print(fork_response.json()['full_name'])
 
@@ -76,7 +78,6 @@ if token_response.status_code == 200:
 
     def dependabot():
         count = 0 
-        countHigh = 0
         dependabotIssues = []
         dependabotIssuesHigh = []
         for records in alerts_response:
@@ -89,12 +90,16 @@ if token_response.status_code == 200:
             summary = records['security_advisory']['summary']
             advisory = records['security_advisory']['ghsa_id']
             blank = ""
-            #dependabot = tablib.Dataset(headers=['Package', 'Severity', 'CVSS', 'Summary', 'Description', 'Path', 'Reference','Status', 'Justification'])
-            dependabot = tablib.Dataset(headers=['Package', 'Severity','Summary', 'Description', 'Path', 'Reference','Status', 'Justification'])
-            print("Dependabot Findings: "+str(count))
-            for i in dependabotIssues:
-                dependabot.append(i)
-            return dependabot
+            dependabotIssues.append([package, severity, cvss, summary, 'https://github.com/'+repo_name+'/tree/'+branch_name+path, 'https://github.com/advisories/'+advisory, blank, blank])
+            count += 1
+            #if severity == "HIGH":
+                 #dependabotIssuesHigh.append([package, severity, cvss, summary, 'https://github.com/'+repo_name+'/tree/'+branch_name+path, 'https://github.com/advisories/'+advisory, blank, blank])
+        #dependabot = tablib.Dataset(headers=['Package', 'Severity', 'CVSS', 'Summary', 'Description', 'Path', 'Reference','Status', 'Justification'])
+        dependabot = tablib.Dataset(headers=['Package', 'Severity','Summary', 'Description', 'Path', 'Reference','Status', 'Justification'])
+        print("Dependabot Findings: "+str(count))
+        for i in dependabotIssues:
+            dependabot.append(i)
+        return dependabot
 
     def semgrep():
         process = subprocess.run(["semgrep","scan","--config","auto","--json","-q"], capture_output=True, cwd=dir_name)
@@ -118,20 +123,21 @@ if token_response.status_code == 200:
             blank = ""
             #semgrepIssues.append([ruleid, confidence, impact, likelihood, severity, message, f'https://github.com/{repo_name}/tree/{branch_name}/{path}#L{startline}-L{endline}', reference, owasp, cwe])
             semgrepIssues.append([ruleid, severity, message, f'https://github.com/{repo_name}/tree/{branch_name}/{path}#L{startline}-L{endline}', reference, blank, blank])
-            count +=1
-            
+            count += 1
+      
         #semgrep = tablib.Dataset(headers=['Ruleid', 'Confidence', 'Impact', 'Likelihood', 'Severity','Description', 'Path', 'Reference', 'OWASP', 'CWE', 'Status', 'Justification'])
         semgrep = tablib.Dataset(headers=['Ruleid', 'Severity', 'Description', 'Path', 'Reference', 'Status', 'Justification'])
         print ("Semgrep Findings: "+str(count))
         for i in semgrepIssues:
             semgrep.append(i)
         return semgrep
-      
+
     file_name = 'output.xlsx'
     book = tablib.Databook((dependabot(),semgrep()))
     with open(file_name, 'wb') as f:
         f.write(book.export('xlsx'))
         print("Results successfully exported to "+file_name)
+
 else:
     print("Invalid token. Please generate a new PAT!!! ")
 
