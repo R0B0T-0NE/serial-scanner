@@ -126,10 +126,8 @@ if token_response.status_code == 200:
         for i in semgrepIssues:
             semgrep.append(i)
         return semgrep
-
-
-    timestr = time.strftime("%Y%m%d-%H%M%S")
-    file_name = 'serial'+timestr+'.xlsx'
+      
+    file_name = 'output.xlsx'
     book = tablib.Databook((dependabot(),semgrep()))
     with open(file_name, 'wb') as f:
         f.write(book.export('xlsx'))
