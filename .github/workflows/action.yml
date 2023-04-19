@@ -30,7 +30,7 @@ jobs:
           python3 -m pip install semgrep
           pip install -r requirements.txt
           pip install "tablib[xlsx]"
-          python try.py ${{ secrets.GH_TOKEN }} ${{ inputs.repo }}
+          python main.py ${{ secrets.GH_TOKEN }} ${{ inputs.repo }}
         shell: sh
         
       - name: artifact step 2
