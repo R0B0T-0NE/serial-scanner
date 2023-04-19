@@ -30,11 +30,11 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          cd download
           python3 -m pip install semgrep
           echo ${{ github.repository }}
           pip install -r requirements.txt
           pip install "tablib[xlsx]"
+          cd download
           python try.py ${{ secrets.GH_TOKEN }} ${{ github.repository }} ${{ github.ref_name }}
           cd ..
         shell: sh
