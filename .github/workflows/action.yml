@@ -9,7 +9,7 @@ on:
       repo:
         required: true
         type: string
-        default: Suraj-Freshworks/action-playground
+        default: NARKOZ/hacker-scripts
         description: 'owner/repo format for example NARKOZ/hacker-scripts for https://github.com/NARKOZ/hacker-scripts'
 
 
