@@ -35,7 +35,7 @@ jobs:
           pip install -r requirements.txt
           pip install "tablib[xlsx]"
           cd download
-          python try.py ${{ secrets.GH_TOKEN }} ${{ github.repository }} ${{ github.ref_name }}
+          python try.py ${{ secrets.GH_TOKEN }} ${{ github.repository }}
           cd ..
         shell: sh
         
