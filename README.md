@@ -1,5 +1,12 @@
 # serial-scanner
 
+## Runnimg via GitHub actions
+
+1. click on Actions
+2. choose Serial Scanner under Workflows
+3. Input the repo name in format owner/repo. Start the flow. 
+4. Download the report once the scan is complete. 
+
 ## Running locally
 ### downloading repo and installing the dependencies
 ```
