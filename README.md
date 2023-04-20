@@ -10,7 +10,7 @@ pip install -r requirements
 
 ### scanning the open-source repo
 ```
-python serialscanner.py <GH_TOKEN> <REPO_NAME>
+python main.py <GH_TOKEN> <REPO_NAME>
 ```
 
 For generating **<GH_TOKEN>**, click on the **Settings** by clicking your profile icon on the top-left. Click on **Developer settings** and select Token (classic) under Personal Access Tokens menu. Add a note and check **public_repo** under scopes. Click on Generate token and copy the token generated. 
