@@ -1,6 +1,6 @@
 # serial-scanner
 
-## Runnimg via GitHub actions
+## Running via GitHub actions
 
 1. Click on Actions
 2. Choose Serial Scanner under All Workflows
