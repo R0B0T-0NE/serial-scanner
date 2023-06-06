@@ -108,7 +108,7 @@ if token_response.status_code == 200:
         for record in data:
             ruleid = record['check_id']
             #confidence = record['extra']['metadata']['confidence']
-            impact = record['extra']['metadata']['impact']
+            #impact = record['extra']['metadata']['impact']
             #likelihood = record['extra']['metadata']['likelihood']
             severity = record['extra']['severity'].replace("ERROR", "HIGH").replace("WARNING","MEDIUM").replace("INFO","LOW")
             #owasp = '\n'.join(record['extra']['metadata']['owasp'])
