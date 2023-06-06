@@ -88,12 +88,12 @@ if token_response.status_code == 200:
             summary = records['security_advisory']['summary']
             advisory = records['security_advisory']['ghsa_id']
             blank = ""
-            dependabotIssues.append([package, severity, cvss, summary, 'https://github.com/'+repo_name+'/tree/'+branch_name+path, 'https://github.com/advisories/'+advisory, blank, blank])
+            dependabotIssues.append([package, severity, summary, 'https://github.com/'+repo_name+'/tree/'+branch_name+path, 'https://github.com/advisories/'+advisory, blank, blank])
             count += 1
             #if severity == "HIGH":
                  #dependabotIssuesHigh.append([package, severity, cvss, summary, 'https://github.com/'+repo_name+'/tree/'+branch_name+path, 'https://github.com/advisories/'+advisory, blank, blank])
-        #dependabot = tablib.Dataset(headers=['Package', 'Severity', 'CVSS', 'Summary', 'Description', 'Path', 'Reference','Status', 'Justification'])
-        dependabot = tablib.Dataset(headers=['Package', 'Severity','Summary', 'Description', 'Path', 'Reference','Status', 'Justification'])
+        #dependabot = tablib.Dataset(headers=['Package', 'Severity', 'Summary', 'Description', 'Path', 'Reference','Status', 'Justification'])
+        dependabot = tablib.Dataset(headers=['Package', 'Severity','Description', 'Path', 'Reference','Status', 'Justification'])
         print("Dependabot Findings: "+str(count))
         for i in dependabotIssues:
             dependabot.append(i)
