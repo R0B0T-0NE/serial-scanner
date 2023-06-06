@@ -56,7 +56,7 @@ if token_response.status_code == 200:
     subprocess.call(["git","clone",repo_url])
     new_repoName = fork_response.json()['full_name']
 
-    #get the branch name of the foreked repo
+    #get the branch name of the forked repo
     branch_url = 'https://api.github.com/repos/'+new_repoName
     branch = requests.request("GET", branch_url, headers=headers, data=payload).json()
     branch_name = branch['default_branch']
@@ -82,9 +82,9 @@ if token_response.status_code == 200:
             #description = (records['security_advisory']['description']).replace('\n', '', 1).replace('`', '').replace('_', '')
             path = records['dependency']['manifest_path']
             package = records['dependency']['package']['name']
-            severity = records['security_advisory']['severity']
+            severity = records['security_advisory']['severity'].upper()
             #vulnerableVersion = records['security_vulnerability']['vulnerable_version_range']
-            cvss = records['security_advisory']['cvss']['score']
+            #cvss = records['security_advisory']['cvss']['score']
             summary = records['security_advisory']['summary']
             advisory = records['security_advisory']['ghsa_id']
             blank = ""
