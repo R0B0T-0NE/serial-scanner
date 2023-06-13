@@ -13,7 +13,6 @@ from time import sleep
 Step-1.2 Examamine the data and flatten the data to 2D
 """""
 
-
 parser = argparse.ArgumentParser("Argument Parser")
 parser.add_argument("token", metavar="token", type=str, help="auth_token")
 parser.add_argument("repo_name", metavar="repo_name", type=str, help="repo_name")
@@ -26,7 +25,6 @@ repo_name = args.repo_name
 #branch_name = args.branch_name
 
 dir_name = repo_name.split("/",1)[1]
-
 
 fork_url = "https://api.github.com/repos/"+repo_name+"/forks"
 
@@ -129,11 +127,62 @@ if token_response.status_code == 200:
         for i in semgrepIssues:
             semgrep.append(i)
         return semgrep
+      
+     def convert_list_to_dict(list):
+        dictionary = {}
+        for item in list:
+        for key, value in item.items():
+            if key == "matches":
+                dictionary[key] = value
+        return dictionary
+
+
+      def licensed():
+        license1 = []
+        process = subprocess.run(["/home/runner/go/bin/license-detector", ".", "-f", "json"],capture_output=True)
+        json_data = convert_list_to_dict(json.loads(process.stdout))
+        data = json_data["matches"]
+        for record in data:
+          licenses = record['license']
+          confidence = record['confidence']
+          file = record['file']
+          blank = ""
+          license1.append([licenses, confidence * 100, file, abc(confidence, licenses) ])
+        
+        licensess = tablib.Dataset(headers=['License', 'Confidence', 'File', 'Status'])
+        for i in license1:
+          licensess.append(i)
+        return licensess
+
+
+      def abc(conf, license):
+        green = {"Apache", "Artistic", "Boost", "BSD", "ISC", "MIT", "OpenSSL", "PHP", "SSLeay", "Zlib", "X11"}
+        yellow = {"Common Development and Distribution License", "CDDL", "Eclipse Public License", "EPL", "European Union Public Licence", "EUPL", "GNU General Public License", "GPL", "GNU Lesser General Public License", "LGPL", "Microsoft Public License", "MPL"}
+        red = {"Business Source License", "CC BY-NC-SA", "GNU Affero General Public License", "AGPL", "Server Side Public License", "SSPL", "Commons Clause License Condition"}
+        if conf >= 0.900000:
+          # Check if the license is in the green list.
+          for key in green:
+            if key in license:
+                return "FOSS made available under the following licenses may be used for any purpose"
+
+          # Check if the license is in the yellow list.
+          for key in yellow:
+            if key in license and "GPL" in license and "AGPL" not in license:
+                return "FOSS made available under the following licenses may be used solely for internal purposes (and for software made available to third parties on a SaaS basis (i.e., the underlying code made not be distributed)"
+
+          # Check if the license is in the red list.
+          for key in red:
+            if key in license:
+                return "FOSS made available under the following licenses may not be used in any manner."
+
+        # If the license is not in any of the lists, return an error message.
+        else:
+          return "Incorrect License."
 
     file_name = 'output.xlsx'
-    book = tablib.Databook((dependabot(),semgrep()))
+    book = tablib.Databook((dependabot(),semgrep(),licensed()))
     with open(file_name, 'wb') as f:
-        f.write(book.export('xlsx'))
+        f.write(book.export('xlsx')).
         print("Results successfully exported to "+file_name)
 
 else:
