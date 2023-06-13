@@ -30,6 +30,8 @@ jobs:
           python3 -m pip install semgrep
           pip install -r requirements.txt
           pip install "tablib[xlsx]"
+          go install github.com/go-enry/go-license-detector/v4/cmd/license-detector@latest
+          file ~/go/bin/license-detector
           python main.py ${{ secrets.GH_TOKEN }} ${{ inputs.repo }}
         shell: sh
         
