@@ -92,6 +92,9 @@ if token_response.status_code == 200:
             for i in dependabotissues:
                 dependabot1.append(i)
             return dependabot1
+            
+            if count == 0:
+                return tablib.Dataset(headers=["Dependabot didn't find any issues"])
         
         except KeyError:
             return tablib.Dataset(headers=["Dependabot didn't find any issues."])
