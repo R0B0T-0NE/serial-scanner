@@ -87,14 +87,14 @@ if token_response.status_code == 200:
                 blank = ""
                 dependabotissues.append([package, severity, summary, 'https://github.com/'+repo_name+'/tree/'+branch_name+'/'+path, 'https://github.com/advisories/'+advisory, blank, blank])
                 count += 1
-            dependabot1 = tablib.Dataset(headers=['Package', 'Severity', 'Description', 'Path', 'Reference', 'Status', 'Justification'])
-            print("Dependabot Findings: " + str(count))
-            for i in dependabotissues:
-                dependabot1.append(i)
-            return dependabot1
-            
             if count == 0:
                 return tablib.Dataset(headers=["Dependabot didn't find any issues"])
+            if count > 0:
+                dependabot1 = tablib.Dataset(headers=['Package', 'Severity', 'Description', 'Path', 'Reference', 'Status', 'Justification'])
+                print("Dependabot Findings: " + str(count))
+                for i in dependabotissues:
+                    dependabot1.append(i)
+                return dependabot1
         
         except KeyError:
             return tablib.Dataset(headers=["Dependabot didn't find any issues."])
