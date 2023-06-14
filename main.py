@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
 import json
-import os
 import tablib
-import time
 import requests
 import subprocess
 import argparse
@@ -75,67 +73,65 @@ if token_response.status_code == 200:
 
     def dependabot():
         count = 0
-        dependabotIssues = []
-        dependabotIssuesHigh = []
-        for records in alerts_response:
-            # description = (records['security_advisory']['description']).replace('\n', '', 1).replace('`', '').replace('_', '')
-            path = records['dependency']['manifest_path']
-            package = records['dependency']['package']['name']
-            severity = records['security_advisory']['severity'].upper()
-            # vulnerableVersion = records['security_vulnerability']['vulnerable_version_range']
-            # cvss = records['security_advisory']['cvss']['score']
-            summary = records['security_advisory']['summary']
-            advisory = records['security_advisory']['ghsa_id']
-            blank = ""
-            dependabotIssues.append(
-                [package, severity, summary, 'https://github.com/' + repo_name + '/tree/' + branch_name + '/' + path,
-                 'https://github.com/advisories/' + advisory, blank, blank])
-            count += 1
-            # if severity == "HIGH":
-            # dependabotIssuesHigh.append([package, severity, cvss, summary, 'https://github.com/'+repo_name+'/tree/'+branch_name+path, 'https://github.com/advisories/'+advisory, blank, blank])
-        # dependabot = tablib.Dataset(headers=['Package', 'Severity', 'Summary', 'Description', 'Path', 'Reference','Status', 'Justification'])
-        dependabot = tablib.Dataset(
-            headers=['Package', 'Severity', 'Description', 'Path', 'Reference', 'Status', 'Justification'])
-        print("Dependabot Findings: " + str(count))
-        for i in dependabotIssues:
-            dependabot.append(i)
-        return dependabot
+        dependabotissues = []
+        try:
+            for records in alerts_response:
+                # description = (records['security_advisory']['description']).replace('\n', '', 1).replace('`', '').replace('_', '')
+                path = records['dependency']['manifest_path']
+                package = records['dependency']['package']['name']
+                severity = records['security_advisory']['severity'].upper()
+                # vulnerableVersion = records['security_vulnerability']['vulnerable_version_range']
+                # cvss = records['security_advisory']['cvss']['score']
+                summary = records['security_advisory']['summary']
+                advisory = records['security_advisory']['ghsa_id']
+                blank = ""
+                dependabotissues.append([package, severity, summary, 'https://github.com/'+repo_name+'/tree/'+branch_name+'/'+path, 'https://github.com/advisories/'+advisory, blank, blank])
+                count += 1
+            dependabot1 = tablib.Dataset(headers=['Package', 'Severity', 'Description', 'Path', 'Reference', 'Status', 'Justification'])
+            print("Dependabot Findings: " + str(count))
+            for i in dependabotissues:
+                dependabot1.append(i)
+            return dependabot1
+        
+        except KeyError:
+            return tablib.Dataset(headers=["Dependabot didn't find any issues."])
 
 
     def semgrep():
         process = subprocess.run(["semgrep", "scan", "--config", "auto", "--json", "-q"], capture_output=True,
                                  cwd=dir_name)
         json_data = json.loads(process.stdout)
-        semgrepIssues = []
+        semgrepissues = []
         count = 0
-        data = json_data['results']
-        for record in data:
-            ruleid = record['check_id']
-            # confidence = record['extra']['metadata']['confidence']
-            # impact = record['extra']['metadata']['impact']
-            # likelihood = record['extra']['metadata']['likelihood']
-            severity = record['extra']['severity'].replace("ERROR", "HIGH").replace("WARNING", "MEDIUM").replace("INFO",
-                                                                                                                 "LOW")
-            # owasp = '\n'.join(record['extra']['metadata']['owasp'])
-            startline = record['start']['line']
-            endline = record['end']['line']
-            # cwe = '\n'.join(record['extra']['metadata']['cwe'])
-            path = record['path']
-            message = record['extra']['message']
-            reference = record['extra']['metadata']['source']
-            blank = ""
-            # semgrepIssues.append([ruleid, confidence, impact, likelihood, severity, message, f'https://github.com/{repo_name}/tree/{branch_name}/{path}#L{startline}-L{endline}', reference, owasp, cwe])
-            semgrepIssues.append([ruleid, severity, message,
-                                  f'https://github.com/{repo_name}/tree/{branch_name}/{path}#L{startline}-L{endline}',
-                                  reference, blank, blank])
-            count += 1
+        try:
+            data = json_data['results']
+            for record in data:
+                ruleid = record['check_id']
+                # confidence = record['extra']['metadata']['confidence']
+                # impact = record['extra']['metadata']['impact']
+                # likelihood = record['extra']['metadata']['likelihood']
+                severity = record['extra']['severity'].replace("ERROR", "High").replace("WARNING", "Medium").replace("INFO", "Low")
+                # owasp = '\n'.join(record['extra']['metadata']['owasp'])
+                startline = record['start']['line']
+                endline = record['end']['line']
+                # cwe = '\n'.join(record['extra']['metadata']['cwe'])
+                path = record['path']
+                message = record['extra']['message']
+                reference = record['extra']['metadata']['source']
+                blank = ""
+                # semgrepissues.append([ruleid, confidence, impact, likelihood, severity, message, f'https://github.com/{repo_name}/tree/{branch_name}/{path}#L{startline}-L{endline}', reference, owasp, cwe])
+                semgrepissues.append([ruleid, severity, message, f'https://github.com/{repo_name}/tree/{branch_name}/{path}#L{startline}-L{endline}', reference, blank, blank])
+                count += 1
 
-        # semgrep = tablib.Dataset(headers=['Ruleid', 'Confidence', 'Impact', 'Likelihood', 'Severity','Description', 'Path', 'Reference', 'OWASP', 'CWE', 'Status', 'Justification'])
-        semgrep = tablib.Dataset(headers=['Ruleid', 'Severity', 'Description', 'Path', 'Reference', 'Status', 'Justification'])
-        print("Semgrep Findings: " + str(count))
-        for i in semgrepIssues:
-            semgrep.append(i)
-        return semgrep
+            # semgrep = tablib.Dataset(headers=['Ruleid', 'Confidence', 'Impact', 'Likelihood', 'Severity','Description', 'Path', 'Reference', 'OWASP', 'CWE', 'Status', 'Justification'])
+            semgrep = tablib.Dataset(headers=['Ruleid', 'Severity', 'Description', 'Path', 'Reference', 'Status', 'Justification'])
+            print("Semgrep Findings: " + str(count))
+            for i in semgrepissues:
+                semgrep.append(i)
+            return semgrep
+
+        except KeyError:
+            return tablib.Dataset(headers=["Semgrep didn't find any issues."])
 
 
     def convert_list_to_dict(list):
@@ -151,18 +147,21 @@ if token_response.status_code == 200:
         license1 = []
         process = subprocess.run(["/home/runner/go/bin/license-detector", ".", "-f", "json"], capture_output=True)
         json_data = convert_list_to_dict(json.loads(process.stdout))
-        data = json_data["matches"]
-        for record in data:
-            licenses = record['license']
-            confidence = record['confidence']
-            file = record['file']
-            blank = ""
-            license1.append([licenses, confidence * 100, file, check_license(confidence, licenses)])
+        try:
+            data = json_data["matches"]
+            for record in data:
+                licenses = record['license']
+                confidence = record['confidence']
+                file = record['file']
+                license1.append([licenses, confidence * 100, file, check_license(confidence, licenses)])
 
-        licensess = tablib.Dataset(headers=['License', 'Confidence', 'File', 'Status'])
-        for i in license1:
-            licensess.append(i)
-        return licensess
+            license = tablib.Dataset(headers=['License', 'Confidence', 'File', 'Status'])
+            for i in license1:
+                license.append(i)
+            return license
+
+        except KeyError:
+            return tablib.Dataset(headers=['No License Found.'])
 
 
     def check_license(conf, license):
@@ -176,7 +175,7 @@ if token_response.status_code == 200:
             # Check if the license is in the green list.
             for key in green:
                 if key in license:
-                    return "FOSS made available under the following licenses may be used for any purpose"
+                    return "FOSS made available under the following licenses may be used for any purpose."
 
             # Check if the license is in the yellow list.
             for key in yellow:
@@ -188,9 +187,11 @@ if token_response.status_code == 200:
                 if key in license:
                     return "FOSS made available under the following licenses may not be used in any manner."
 
-        # If the license is not in any of the lists, return an error message.
+                if key not in {green, yellow, red}:
+                    return "Check with the the Legal team please!"
+
         else:
-            return "Incorrect License."
+            return "Check with the the Legal team once."
 
 
     file_name = 'output.xlsx'
