@@ -186,7 +186,7 @@ if token_response.status_code == 200:
                 if key in license:
                     return "FOSS made available under the following licenses may not be used in any manner."
 
-                if key not in {green, yellow, red}:
+                if key not in [green, yellow, red]:
                     return "Check with the the Legal team please!"
 
         else:
