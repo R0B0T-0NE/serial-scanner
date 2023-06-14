@@ -98,8 +98,7 @@ if token_response.status_code == 200:
 
 
     def semgrep():
-        process = subprocess.run(["semgrep", "scan", "--config", "auto", "--json", "-q"], capture_output=True,
-                                 cwd=dir_name)
+        process = subprocess.run(["semgrep", "scan", "--config", "auto", "--json", "-q"], capture_output=True, cwd=dir_name)
         json_data = json.loads(process.stdout)
         semgrepissues = []
         count = 0
@@ -145,7 +144,7 @@ if token_response.status_code == 200:
 
     def licensed():
         license1 = []
-        process = subprocess.run(["/home/runner/go/bin/license-detector", ".", "-f", "json"], capture_output=True)
+        process = subprocess.run(["/home/runner/go/bin/license-detector", ".", "-f", "json"], capture_output=True, cwd=dir_name)
         json_data = convert_list_to_dict(json.loads(process.stdout))
         try:
             data = json_data["matches"]
