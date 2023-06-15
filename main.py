@@ -112,7 +112,7 @@ if token_response.status_code == 200:
                 # confidence = record['extra']['metadata']['confidence']
                 # impact = record['extra']['metadata']['impact']
                 # likelihood = record['extra']['metadata']['likelihood']
-                severity = record['extra']['severity'].replace("ERROR", "High").replace("WARNING", "Medium").replace("INFO", "Low")
+                severity = record['extra']['severity'].replace("ERROR", "HIGH").replace("WARNING", "MEDIUM").replace("INFO", "LOW")
                 # owasp = '\n'.join(record['extra']['metadata']['owasp'])
                 startline = record['start']['line']
                 endline = record['end']['line']
@@ -190,10 +190,10 @@ if token_response.status_code == 200:
                     return "FOSS made available under the following licenses may not be used in any manner."
 
                 if key not in [green, yellow, red]:
-                    return "Check with the the Legal team please!"
+                    return "Check with the the Legal team at legal@freshworks.com!"
 
         else:
-            return "Check with the the Legal team once."
+            return "Check with the the Legal team at legal@freshworks.com!"
 
 
     file_name = 'output.xlsx'
