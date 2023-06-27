@@ -65,9 +65,9 @@ if token_response.status_code == 200:
         print("Dependabot alerts succesfully enabled...")
     # print(activate_response.text)
 
-    sleep(300)
+    sleep(30)
 
-    alerts_url = 'https://api.github.com/repos/' + new_repoName + '/dependabot/alerts'
+    alerts_url = 'https://api.github.com/repos/' + new_repoName + '/dependabot/alerts?per_page=100&state=open'
     alerts_response = requests.request("GET", alerts_url, headers=headers, data=payload).json()
 
 
