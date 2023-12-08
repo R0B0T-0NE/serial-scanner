@@ -197,7 +197,7 @@ if token_response.status_code == 200:
 
 
     file_name = 'output.xlsx'
-    book = tablib.Databook((dependabot(), semgrep(), licensed()))
+    book = tablib.Databook((dependabot(), semgrep()))
     with open(file_name, 'wb') as f:
         f.write(book.export('xlsx'))
         print("Results successfully exported to " + file_name)
