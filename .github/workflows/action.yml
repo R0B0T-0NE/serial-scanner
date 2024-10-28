@@ -18,7 +18,9 @@ jobs:
       - name: Install required dependencies and run script
         run: |
           python3 -m pip install --upgrade pip
-          pip install "requests[security]"  # This installs a compatible version of urllib3
+          pip install "requests[security]"  # Installs requests with compatible urllib3
+          pip install urllib3==1.26.15       # Specify a compatible version
+          pip install chardet==4.0.0         # Specify a compatible version
           pip install semgrep
           pip install -r requirements.txt
           pip install "tablib[xlsx]"
@@ -37,6 +39,6 @@ jobs:
         env:
           GH_DL_TOKEN: ${{ secrets.GH_DL_TOKEN }}
         run: |
-           OWNER=${{ github.repository_owner }}; REPO=$(echo "${{ inputs.repo }}" | cut -d'/' -f2); echo "$REPO"; curl -L -X DELETE -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_DL_TOKEN" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/$OWNER/$REPO"
+          OWNER=${{ github.repository_owner }}; REPO=$(echo "${{ inputs.repo }}" | cut -d'/' -f2); echo "$REPO"; curl -L -X DELETE -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_DL_TOKEN" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/$OWNER/$REPO"
         shell: sh
         continue-on-error: true
