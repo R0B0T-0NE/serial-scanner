@@ -1,8 +1,5 @@
-  # This is a basic workflow to help you get started with Actions
-
 name: Serial Scanner
 
-# Controls when the workflow will run
 on:
   workflow_dispatch:
     inputs:
@@ -12,29 +9,24 @@ on:
         default: NARKOZ/hacker-scripts
         description: 'owner/repo format for example NARKOZ/hacker-scripts for https://github.com/NARKOZ/hacker-scripts'
 
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   scan:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
-    
-      # Runs a set of commands using the runners shell
+
       - name: Install required dependencies and run script
         run: |
-          python3 -m pip install semgrep
+          python3 -m pip install --upgrade pip
+          pip install "requests[security]"  # This installs a compatible version of urllib3
+          pip install semgrep
           pip install -r requirements.txt
           pip install "tablib[xlsx]"
           go install github.com/go-enry/go-license-detector/v4/cmd/license-detector@latest
           file ~/go/bin/license-detector
           python main.py ${{ secrets.GH_TOKEN }} ${{ inputs.repo }}
         shell: sh
-        
+
       - name: Uploading the output
         uses: actions/upload-artifact@v4
         with:
@@ -48,5 +40,3 @@ jobs:
            OWNER=${{ github.repository_owner }}; REPO=$(echo "${{ inputs.repo }}" | cut -d'/' -f2); echo "$REPO"; curl -L -X DELETE -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GH_DL_TOKEN" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/$OWNER/$REPO"
         shell: sh
         continue-on-error: true
-    
-
